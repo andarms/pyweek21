@@ -8,6 +8,7 @@ class Game():
     """CLass to control the game and the game_states"""
 
     def __init__(self):
+        self.bg_color = (255, 255, 207)
         self.caption = bootstrap.CAPTION
         self.screen = pg.display.get_surface()
         self.screen_size = bootstrap.SCREEN_SIZE
@@ -16,13 +17,15 @@ class Game():
         self.show_fps = True
         self.done = False
         self.keys = pg.key.get_pressed()
+        self.state_dict = {}
+        self.state = None
+        self.state_name = None
 
-    def toggle_show_fps(self, key):
-        """Press f5 to turn on/off displaying the framerate in the caption."""
-        if key == pg.K_F5:
-            self.show_fps = not self.show_fps
-            if not self.show_fps:
-                pg.display.set_caption(self.caption)
+    def setup_states(self, state_dict, start_state):
+        """ state_dict in a dict with a instance of each state of the game"""
+        self.state_dict = state_dict
+        self.state_name = start_state
+        self.state = self.state_dict[self.state_name]
 
     def event_loop(self):
         for event in pg.event.get():
@@ -33,22 +36,80 @@ class Game():
                 self.keys = pg.key.get_pressed()
                 self.toggle_show_fps(event.key)
 
+            if event.type == pg.KEYUP:
+                self.keys = pg.key.get_pressed()
+
+            self.state.handle_events(event)
+
+    def toggle_show_fps(self, key):
+        """Press f5 to turn on/off displaying the framerate in the caption."""
+        if key == pg.K_F5:
+            self.show_fps = not self.show_fps
+            if not self.show_fps:
+                pg.display.set_caption(self.caption)
+
     def update(self, dt):
+        self.current_time = pg.time.get_ticks()
+        self.state.update(dt, self.current_time, self.keys)
         if self.show_fps:
             fps = self.clock.get_fps()
             with_fps = "{} - {:.2f} FPS".format(self.caption, fps)
             pg.display.set_caption(with_fps)
 
-        # if self.state.quit:
-        #     self.done = True
+        if self.state.quit:
+            self.done = True
+        if self.state.done:
+            self.change_state()
+
+    def change_state(self):
+        previous, self.state_name = self.state_name, self.state.next
+        data = self.state.clear()
+        self.state = self.state_dict[self.state_name]
+        self.state.start(data, self.current_time)
+        self.state.previous = previous
+        self.keys = pg.key.get_pressed()
 
     def draw(self):
-        self.screen.fill((255, 255, 207))
-        pg.display.flip()
+        self.screen.fill(self.bg_color)
+        self.state.draw(self.screen)
+        pg.display.update()
 
     def main_loop(self):
         while not self.done:
-            delta_time = self.clock.tick(self.fps)/1000
+            delta_time = self.clock.tick(self.fps)/1000.0
             self.event_loop()
             self.update(delta_time)
             self.draw()
+
+
+class GameState(object):
+
+    """ Parent class for the game states. All states should inherint from it."""
+
+    def __init__(self):
+        self.quit = False
+        self.done = False
+        self.previous = None
+        self.next = None
+        self.data = {}
+        self.star_time = 0.0
+        self.current_time = 0.0
+
+    def handle_events(self, event):
+        pass
+
+    def update(self, dt, current_time, keys):
+        pass
+
+    def draw(self, surface):
+        pass
+
+    def clear(self):
+        """ Retunr the persintant data, cleanup all changes.
+            For complex states this method should be overloaded"""
+        self.done = False
+        return self.data
+
+    def start(self, data, star_time):
+        self.data = data
+        self.star_time = star_time
