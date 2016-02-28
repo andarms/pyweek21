@@ -1,12 +1,13 @@
-import bootstrap
+from . import bootstrap
 from . import game
-from .states import splash
+from .states import test, splash
 
 
 def main():
     g = game.Game()
     state_dict = {
-        "Splash": splash.SplashState()
+        "Splash": splash.SplashState(),
+        "Test": test.TestState()
     }
-    g.setup_states(state_dict, "Splash")
+    g.setup_states(state_dict, "Test")
     g.main_loop()

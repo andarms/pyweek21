@@ -1,6 +1,6 @@
 import pygame as pg
 
-import bootstrap
+from . import bootstrap
 
 
 class Game():

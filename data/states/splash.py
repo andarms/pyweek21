@@ -4,7 +4,7 @@ from ..game import GameState
 
 class SplashState(GameState):
 
-    """Splash scren"""
+    """Splash screen"""
 
     def __init__(self):
         super(SplashState, self).__init__()
