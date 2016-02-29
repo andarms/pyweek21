@@ -1,4 +1,5 @@
 import pygame as pg
+from pytmx.util_pygame import load_pygame
 
 from . import bootstrap
 from . import pathfinding
@@ -8,32 +9,30 @@ from . import util
 class Map():
 
     def __init__(self, map_source):
-        self.map_source = map_source
-        self.walls_sprites = pg.sprite.Group()
+        self.all_sprites = pg.sprite.Group()
+        self.visible_sprites = pg.sprite.Group()
+        self.map_sprites = pg.sprite.Group()
+        self.collition_sprites = pg.sprite.Group()
+
+        self.map_source = load_pygame(bootstrap.MAPS[0])
         self.grid = pathfinding.GridWithWeights(
-            bootstrap.GRID_SIZE[0], bootstrap.GRID_SIZE[1])
-        self.grid.walls = []
-        x, y = 0, 0
-
-        for row in self.map_source:
-            for col in row:
-                if col == '#':
-                    w = MapWall(x, y)
-                    self.walls_sprites.add(w)
-                    self.grid.walls.append(util.get_tile((x, y)))
-                x += bootstrap.TILE_SIZE
-            y += bootstrap.TILE_SIZE
-            x = 0
-
-    def draw(self, surface):
-        self.walls_sprites.draw(surface)
-
-
-class MapWall(pg.sprite.Sprite):
-
-    def __init__(self, x, y):
-        pg.sprite.Sprite.__init__(self)
-        self.image = pg.Surface([32, 32])
-        self.image.fill(util.WHITE)
+            self.map_source.width, self.map_source.height)
+        w = self.map_source.width * util.TILE_SIZE
+        h = self.map_source.height * util.TILE_SIZE
+        self.image = pg.Surface((w, h))
         self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+
+        self.make_map()
+
+    def make_map(self):
+        layer = self.map_source.layers[0]
+        for x, y, image in layer.tiles():
+            tile = pg.sprite.Sprite(self.map_sprites, self.all_sprites)
+            tile.image = image
+            tile.rect = pg.Rect(
+                x*util.TILE_SIZE, y*util.TILE_SIZE, util.TILE_SIZE, util.TILE_SIZE)
+            self.image.blit(tile.image, tile.rect)
+
+    def draw(self, surface, viewport):
+        # self.all_sprites.draw(self.image)
+        surface.blit(self.image, (0, 0), viewport)

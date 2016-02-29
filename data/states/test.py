@@ -11,9 +11,9 @@ class TestState(GameState):
 
     def __init__(self):
         super(TestState, self).__init__()
-        self.player_sprite = pg.sprite.GroupSingle()
+        self.player_singleton = pg.sprite.GroupSingle()
         self.enemes = pg.sprite.Group()
-        self.map = Map(bootstrap.MAP_SOURCE)
+        self.map = Map("test")
         self.night_bg = (25, 25, 56)
         self.day_bg = (225, 225, 255)
         self.day_duation = 36  # seg
@@ -22,9 +22,12 @@ class TestState(GameState):
         self.ticks = 0
         self.days = 0
 
-        self.player = actors.Player((32, 32), self.player_sprite)
+        self.player = actors.Player((32, 32), self.player_singleton)
         self.hz = actors.HungryZombie((128, 128))
         self.hz.add(self.enemes)
+
+        self.viewport = Viewport()
+        self.viewport.update(self.player_singleton.sprite, self.map.rect)
 
     def handle_events(self, event):
         self.player.handle_events(event)
@@ -41,8 +44,9 @@ class TestState(GameState):
             self.days += 1
             print("Day: %s" % self.days)
 
-        self.player.update(dt, current_time, self.map.walls_sprites)
+        self.player.update(dt, current_time, self.map.collition_sprites)
         self.enemes.update(dt, current_time, self.player, self.map.grid)
+        self.viewport.update(self.player_singleton.sprite, self.map.rect)
 
     def draw(self, surface):
         if self.day:
@@ -50,6 +54,18 @@ class TestState(GameState):
         else:
             surface.fill(self.night_bg)
 
-        self.map.draw(surface)
-        self.player_sprite.draw(surface)
+        self.map.draw(surface, self.viewport)
+        self.player_singleton.draw(surface)
         self.enemes.draw(surface)
+
+
+class Viewport(object):
+
+    """docstring for viewport"""
+
+    def __init__(self):
+        self.rect = bootstrap.SCREEN_RECT.copy()
+
+    def update(self, player, screen_rect):
+        self.rect.center = player.rect.center
+        self.rect.clamp_ip(screen_rect)

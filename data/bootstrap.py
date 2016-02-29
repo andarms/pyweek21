@@ -1,20 +1,17 @@
-import pygame as pg
 import random
+import os
 
-# Game consts
-TILE_SIZE = 32
-GRID_SIZE = (32, 20)
-SCREEN_SIZE = (TILE_SIZE * GRID_SIZE[0], TILE_SIZE * GRID_SIZE[1])
-CAPTION = "The Day Atfer Zombies"
+import pygame as pg
+
+from . import util
 
 pg.init()
-SCREEN = pg.display.set_mode(SCREEN_SIZE)
+SCREEN = pg.display.set_mode(util.SCREEN_SIZE)
 SCREEN_RECT = SCREEN.get_rect()
 
 
-MAP_SOURCE = []
-for y in range(GRID_SIZE[1]):
-    line = ""
-    for x in range(GRID_SIZE[0]):
-        line += random.choice("   #")
-    MAP_SOURCE.append(line)
+# load resources
+FONTS = util.load_all_fonts(os.path.join('resources', 'fonts'))
+GFX = util.load_all_gfx("resources")
+MAPS = util.load_all_maps(os.path.join('resources', 'maps'))
+# SFX = util.load_all_music(os.path.join('resources', 'music'))

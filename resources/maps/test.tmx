@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="100" height="100" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="52_garden_street_set" tilewidth="32" tileheight="32" tilecount="55" columns="5">
+  <image source="../tiles/52_garden_street_set.png" width="160" height="352"/>
+ </tileset>
+ <layer name="Capa de Patrones 1" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt3M1qwkAUQOHZ9odKq6C2pQgqtLqx6gP7qL3QiEEkCCbmTHIW307HiYd4ERk3KaVNZqbhpfAB2E/fNdFjFbaFH8A15qSJHrswC4vwC7jGnDTVYxnm9kD0WId94RtwjTnp8jz/vNG4WGdSw1rXeiv1eL3j697DIFOP4QGwD/17Cs+AfdTtPUPDdPq8GoWvDml7ftUxz9t+D+1hDxJ7sNiDxR4s9mCxB4s9WOzBYg8We7DYg+XYY5DSwR7tsweLPVjswWIPFnuw2IPFHiz2YLEHiz1Y7MFiDxZ7sNiDxR4s9mDx90EW7w8We7DQepTP//W9h+c5GTzPyeJ5To7jec7Y/2EE2E+dqmbLpcdd+9xbVa1Pm+d9Zw8We7DYg8UeLOc9bGIP2YPK+cFiDxZ7sNiDxR4s9mCxB4vfP1i8P1jswWIPFnuw2IPFHiz2YLEHiz1Y7MFiDxZ7sNiDxR4s9mCxB4s9WOzBYg8We7DYg8UeLPZgsQeLPVjswWIPFnuw2IPFHiz2YLEHiz1Y7MFiDxZ7sHT5/9v/APIZLEo=
+  </data>
+ </layer>
+</map>

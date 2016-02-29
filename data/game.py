@@ -1,6 +1,6 @@
 import pygame as pg
 
-from . import bootstrap
+from . import util
 
 
 class Game():
@@ -9,9 +9,9 @@ class Game():
 
     def __init__(self):
         self.bg_color = (255, 255, 207)
-        self.caption = bootstrap.CAPTION
+        self.caption = util.CAPTION
         self.screen = pg.display.get_surface()
-        self.screen_size = bootstrap.SCREEN_SIZE
+        self.screen_size = util.SCREEN_SIZE
         self.clock = pg.time.Clock()
         self.fps = 60.0
         self.show_fps = True
