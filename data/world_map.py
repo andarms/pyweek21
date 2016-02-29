@@ -9,7 +9,7 @@ class Map():
 
     def __init__(self, map_source):
         self.map_source = map_source
-        self.sprites = pg.sprite.Group()
+        self.walls_sprites = pg.sprite.Group()
         self.grid = pathfinding.GridWithWeights(
             bootstrap.GRID_SIZE[0], bootstrap.GRID_SIZE[1])
         self.grid.walls = []
@@ -19,14 +19,14 @@ class Map():
             for col in row:
                 if col == '#':
                     w = MapWall(x, y)
-                    self.sprites.add(w)
+                    self.walls_sprites.add(w)
                     self.grid.walls.append(util.get_tile((x, y)))
                 x += bootstrap.TILE_SIZE
             y += bootstrap.TILE_SIZE
             x = 0
 
     def draw(self, surface):
-        self.sprites.draw(surface)
+        self.walls_sprites.draw(surface)
 
 
 class MapWall(pg.sprite.Sprite):
@@ -35,6 +35,5 @@ class MapWall(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.Surface([32, 32])
         self.image.fill(util.WHITE)
-        self.rect = pg.Rect(32, 32, 0, 0)
-        self.rect.x = x
-        self.rect.y = y
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
